@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# Virtual environments and package caches
+.venv/
+.uv-cache/
+.uv-python/
+
+# Django
+db.sqlite3
+staticfiles/
+
+# Local configuration
+.env
+
+# Test and coverage output
+.coverage
+htmlcov/
+.pytest_cache/
+*.log
+
+# Editors and operating systems
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
