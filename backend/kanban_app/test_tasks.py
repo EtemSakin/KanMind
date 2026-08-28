@@ -95,6 +95,29 @@ class TaskApiTests(APITestCase):
         self.assertNotIn("reviewer_id", response.data)
         self.assertEqual(response.data["comments_count"], 0)
 
+        def test_create_task_returns_404_for_unknown_board(self):
+            self.authenticate(self.owner)
+
+            payload = {
+                "board": 999999,
+                "title": "Unknown Board",
+                "description": "",
+                "status": "to-do",
+                "priority": "medium",
+                "due_date": "2026-09-01",
+        }
+
+        response = self.client.post(
+            reverse("task-create"),
+            payload,
+            format="json",
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_404_NOT_FOUND,
+        )
+
     def test_outsider_cannot_create_task(self):
         self.authenticate(self.outsider)
         payload = {
