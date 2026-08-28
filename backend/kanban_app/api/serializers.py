@@ -158,7 +158,12 @@ class TaskSerializer(serializers.ModelSerializer):
             requested_board = attrs.get("board")
             if requested_board is not None and requested_board != board:
                 raise serializers.ValidationError(
-                    {"board": "Ein Task kann nicht in ein anderes Board verschoben werden."}
+                    {
+                        "board": (
+                            "Ein Task kann nicht in ein anderes Board "
+                            "verschoben werden."
+                        )
+                    }
                 )
 
         assignee = (
@@ -173,13 +178,27 @@ class TaskSerializer(serializers.ModelSerializer):
         )
 
         if board is not None:
-            if assignee is not None and not self._is_board_participant(board, assignee):
+            if (
+                assignee is not None
+                and not self._is_board_participant(board, assignee)
+            ):
                 raise serializers.ValidationError(
-                    {"assignee_id": "Der Assignee muss Mitglied des Boards sein."}
+                    {
+                        "assignee_id": (
+                            "Der Assignee muss Mitglied des Boards sein."
+                        )
+                    }
                 )
-            if reviewer is not None and not self._is_board_participant(board, reviewer):
+            if (
+                reviewer is not None
+                and not self._is_board_participant(board, reviewer)
+            ):
                 raise serializers.ValidationError(
-                    {"reviewer_id": "Der Reviewer muss Mitglied des Boards sein."}
+                    {
+                        "reviewer_id": (
+                            "Der Reviewer muss Mitglied des Boards sein."
+                        )
+                    }
                 )
 
         return attrs
@@ -193,7 +212,10 @@ class TaskSerializer(serializers.ModelSerializer):
     @staticmethod
     def _is_board_participant(board, user):
         """Return whether the user owns or belongs to the board."""
-        return board.owner_id == user.id or board.members.filter(id=user.id).exists()
+        return (
+            board.owner_id == user.id
+            or board.members.filter(id=user.id).exists()
+        )
 
 
 class BoardTaskSerializer(TaskSerializer):
