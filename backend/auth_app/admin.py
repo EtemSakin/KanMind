@@ -6,6 +6,8 @@ from auth_app.models import User
 
 @admin.register(User)
 class CustomUserAdmin(UserAdmin):
+    """Configure the custom user model in Django admin."""
+
     model = User
     ordering = ("email",)
     list_display = ("email", "fullname", "is_staff", "is_active")
