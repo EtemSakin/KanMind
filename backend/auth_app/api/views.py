@@ -1,3 +1,5 @@
+"""Authentication API views for registration, login, and user lookup."""
+
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from rest_framework import status
@@ -17,6 +19,7 @@ User = get_user_model()
 
 
 def build_auth_response(user):
+    """Return authentication data for the given user."""
     token, _ = Token.objects.get_or_create(user=user)
     return {
         "token": token.key,
@@ -27,10 +30,13 @@ def build_auth_response(user):
 
 
 class RegistrationView(APIView):
+    """Register new users."""
+
     authentication_classes = []
     permission_classes = [AllowAny]
 
     def post(self, request):
+        """Create a user account and return authentication data."""
         serializer = RegistrationSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
@@ -38,10 +44,13 @@ class RegistrationView(APIView):
 
 
 class LoginView(APIView):
+    """Authenticate existing users."""
+
     authentication_classes = []
     permission_classes = [AllowAny]
 
     def post(self, request):
+        """Authenticate a user and return authentication data."""
         serializer = LoginSerializer(
             data=request.data,
             context={"request": request},
@@ -54,7 +63,10 @@ class LoginView(APIView):
 
 
 class EmailCheckView(APIView):
+    """Look up users by email address."""
+
     def get(self, request):
+        """Return public user data for the requested email address."""
         email = request.query_params.get("email", "").strip().lower()
         if not email:
             return Response(
