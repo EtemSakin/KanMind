@@ -1,3 +1,5 @@
+"""Serializers for boards, tasks, comments, and related user data."""
+
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
@@ -9,6 +11,8 @@ User = get_user_model()
 
 
 class BoardSummarySerializer(serializers.ModelSerializer):
+    """Serialize board data for board list responses."""
+
     members = serializers.PrimaryKeyRelatedField(
         queryset=User.objects.all(),
         many=True,
@@ -36,27 +40,33 @@ class BoardSummarySerializer(serializers.ModelSerializer):
         read_only_fields = ("id",)
 
     def get_member_count(self, obj):
+        """Return the number of board members."""
         if hasattr(obj, "_member_count"):
             return obj._member_count
         return obj.members.count()
 
     def get_ticket_count(self, obj):
+        """Return the number of tasks on the board."""
         if hasattr(obj, "_ticket_count"):
             return obj._ticket_count
         return obj.tasks.count()
 
     def get_tasks_to_do_count(self, obj):
+        """Return the number of tasks with to-do status."""
         if hasattr(obj, "_tasks_to_do_count"):
             return obj._tasks_to_do_count
         return obj.tasks.filter(status=Task.Status.TO_DO).count()
 
     def get_tasks_high_prio_count(self, obj):
+        """Return the number of high-priority tasks."""
         if hasattr(obj, "_tasks_high_prio_count"):
             return obj._tasks_high_prio_count
         return obj.tasks.filter(priority=Task.Priority.HIGH).count()
 
 
 class BoardDetailSerializer(serializers.ModelSerializer):
+    """Serialize detailed board data including members and tasks."""
+
     owner_id = serializers.IntegerField(source="owner.id", read_only=True)
     members = UserShortSerializer(many=True, read_only=True)
     tasks = serializers.SerializerMethodField()
@@ -66,10 +76,13 @@ class BoardDetailSerializer(serializers.ModelSerializer):
         fields = ("id", "title", "owner_id", "members", "tasks")
 
     def get_tasks(self, obj):
+        """Return serialized tasks belonging to the board."""
         return BoardTaskSerializer(obj.tasks.all(), many=True).data
 
 
 class BoardUpdateSerializer(serializers.ModelSerializer):
+    """Validate board updates and serialize updated board data."""
+
     owner_data = UserShortSerializer(
         source="owner",
         read_only=True,
@@ -99,6 +112,8 @@ class BoardUpdateSerializer(serializers.ModelSerializer):
 
 
 class TaskSerializer(serializers.ModelSerializer):
+    """Serialize and validate task data."""
+
     assignee = UserShortSerializer(read_only=True)
     reviewer = UserShortSerializer(read_only=True)
     assignee_id = serializers.PrimaryKeyRelatedField(
@@ -136,6 +151,7 @@ class TaskSerializer(serializers.ModelSerializer):
         read_only_fields = ("id",)
 
     def validate(self, attrs):
+        """Validate task assignments and prevent moving tasks between boards."""
         board = attrs.get("board")
         if self.instance is not None:
             board = self.instance.board
@@ -169,16 +185,20 @@ class TaskSerializer(serializers.ModelSerializer):
         return attrs
 
     def get_comments_count(self, obj):
+        """Return the number of comments attached to the task."""
         if hasattr(obj, "_comments_count"):
             return obj._comments_count
         return obj.comments.count()
 
     @staticmethod
     def _is_board_participant(board, user):
+        """Return whether the user owns or belongs to the board."""
         return board.owner_id == user.id or board.members.filter(id=user.id).exists()
 
 
 class BoardTaskSerializer(TaskSerializer):
+    """Serialize tasks nested inside board responses."""
+
     class Meta(TaskSerializer.Meta):
         fields = tuple(
             field for field in TaskSerializer.Meta.fields if field != "board"
@@ -186,6 +206,8 @@ class BoardTaskSerializer(TaskSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
+    """Serialize task comments and their authors."""
+
     author = serializers.CharField(source="author.fullname", read_only=True)
 
     class Meta:
