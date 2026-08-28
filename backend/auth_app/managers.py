@@ -7,6 +7,7 @@ class UserManager(BaseUserManager):
     use_in_migrations = True
 
     def create_user(self, email, password=None, **extra_fields):
+        """Create and save a regular user with an email address."""
         if not email:
             raise ValueError("Eine E-Mail-Adresse ist erforderlich.")
 
@@ -17,6 +18,7 @@ class UserManager(BaseUserManager):
         return user
 
     def create_superuser(self, email, password=None, **extra_fields):
+        """Create and save a superuser with administrative permissions."""
         extra_fields.setdefault("is_staff", True)
         extra_fields.setdefault("is_superuser", True)
         extra_fields.setdefault("is_active", True)
