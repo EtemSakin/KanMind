@@ -194,8 +194,18 @@ class BoardApiTests(APITestCase):
             board.members.order_by("id"),
             [self.owner, self.outsider],
         )
+
         self.assertEqual(
-            response.data["owner_data"]["id"]
+            set(response.data),
+            {
+                "id",
+                "title",
+                "owner_data",
+                "members_data",
+            },
+        )
+        self.assertEqual(
+            response.data["owner_data"]["id"],
             self.owner.id,
         )
         self.assertEqual(
