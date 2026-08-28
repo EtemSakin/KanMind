@@ -86,7 +86,7 @@ class BoardDetailView(RetrieveUpdateDestroyAPIView):
         board.members.add(board.owner)
 
         return Response(
-            BoardDetailSerializer(
+            BoardUpdateSerializer(
                 board,
                 context=self.get_serializer_context(),
                 ).data
