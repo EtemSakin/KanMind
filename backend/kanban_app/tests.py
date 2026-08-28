@@ -195,9 +195,14 @@ class BoardApiTests(APITestCase):
             [self.owner, self.outsider],
         )
         self.assertEqual(
-            {member["id"] for member in response.data["members"]},
+            response.data["owner_data"]["id"]
+            self.owner.id,
+        )
+        self.assertEqual(
+            {member["id"] for member in response.data["members_data"]},
             {self.owner.id, self.outsider.id},
         )
+        self.assertNotIn("members", response.data)
 
     def test_only_owner_can_delete_board(self):
         board = Board.objects.create(title="Delete Board", owner=self.owner)
