@@ -97,6 +97,18 @@ class TaskCreateView(CreateAPIView):
     serializer_class = TaskSerializer
     permission_classes = [IsAuthenticated]
 
+    def create(self, request, *args, **kwargs):
+        board_id =request.data.get("board")
+
+        try:
+            board_id = int(board_id)
+        except (TypeError, ValueError):
+            return super().create(request, *args, **kwargs)
+
+        get_object_or_404(Board, id=board_id)
+
+        return super().create(request, *args, **kwargs)
+
     def perform_create(self, serializer):
         board = serializer.validated_data["board"]
         if not is_board_participant(self.request.user, board):
