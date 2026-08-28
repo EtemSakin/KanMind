@@ -1,55 +1,174 @@
 # KanMind
 
-Vollständiges lokales KanMind-Projekt mit getrenntem Frontend und Backend.
+KanMind is a full-stack Kanban task management application with a Django REST Framework backend and a browser-based frontend.
 
-**Entwickelt im Rahmen des Weiterbildungsprogramms der Developer Akademie GmbH.**
+**Developed as part of the Developer Akademie GmbH advanced training program.**
 
-Dieses Repository dient ausschließlich nicht-kommerziellen Lern-, Portfolio-, Bewerbungs- und Referenzzwecken.
+This repository is intended exclusively for non-commercial learning, portfolio, application, and reference purposes.
+
+## Overview
+
+KanMind allows users to organize work in boards, create and manage tasks, assign responsibilities, review tasks, and collaborate through comments.
+
+The project consists of a Django REST Framework API and a separate browser-based frontend.
+
+## Features
+
+- Email-based registration and login
+- Token-based authentication
+- Board creation and member management
+- Task creation and editing
+- Task assignment and review
+- Task comments
+- Object-level permissions
+- Board membership validation
+- Automated Django tests
+- Environment-based configuration with `.env`
+
+## Technology Stack
+
+### Backend
+
+- Python
+- Django 5.2
+- Django REST Framework
+- DRF Token Authentication
+- django-cors-headers
+- python-dotenv
+- SQLite
+
+### Frontend
+
+- HTML
+- CSS
+- Vanilla JavaScript
+
+## Project Structure
 
 ```text
 KanMind/
-├── backend/      Django REST Framework API
-├── frontend/     HTML/CSS/Vanilla-JavaScript-Frontend
-├── KanMind.txt   ursprünglicher Projektbrief
+├── backend/
+│   ├── auth_app/
+│   ├── core/
+│   ├── kanban_app/
+│   ├── .env.example
+│   └── README.md
+│
+├── frontend/
+│   ├── README.md
+│   └── LICENSE.md
+│
+├── KanMind.txt
 └── README.md
 ```
 
-## Anwendung starten
+## Quick Start
 
-Zwei PowerShell-Terminals im Projektordner öffnen.
+### 1. Set up the backend
 
-Terminal 1 – Backend:
-
-```powershell
-.\backend\.venv\Scripts\python.exe backend\manage.py runserver 127.0.0.1:8000
-```
-
-Terminal 2 – Frontend:
+Windows:
 
 ```powershell
-.\backend\.venv\Scripts\python.exe -m http.server 5500 --directory frontend
+cd backend
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
+Copy-Item .env.example .env
+python manage.py migrate
+python manage.py runserver
 ```
 
-Anschließend im Browser öffnen:
+macOS / Linux:
+
+```bash
+cd backend
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
+cp .env.example .env
+python manage.py migrate
+python manage.py runserver
+```
+
+The API will be available at:
+
+```text
+http://127.0.0.1:8000/api/
+```
+
+### 2. Start the frontend
+
+Keep the backend running and open a second terminal in the project root.
+
+Windows:
+
+```powershell
+python -m http.server 5500 --directory frontend
+```
+
+macOS / Linux:
+
+```bash
+python3 -m http.server 5500 --directory frontend
+```
+
+Then open:
 
 ```text
 http://127.0.0.1:5500/
 ```
 
-Das Frontend kommuniziert über `http://127.0.0.1:8000/api/` mit dem Backend. CORS ist für `127.0.0.1:5500` und `localhost:5500` freigegeben.
+## Tests
 
-Als Frontendbasis dient ausschließlich das offizielle KanMind-Frontend der Developer Akademie. Personenbezogene Imprint-/Privacy-Angaben sind nicht hinterlegt.
+With the backend virtual environment activated:
 
-## Lizenz
-
-Für die von der Developer Akademie bereitgestellten Frontend-Bestandteile gilt die [Developer Akademie Lernlizenz (Nicht-kommerziell)](frontend/LICENSE.md). Der eigenständig entwickelte Backend-Code wird zusammen mit dem Frontend ausschließlich im Rahmen der dort geregelten Portfolio-Nutzung veröffentlicht.
-
-Eine kommerzielle Nutzung, ein Verkauf, eine Monetarisierung oder ein produktiver Betrieb sind nicht gestattet.
-
-## Backend testen
-
-```powershell
-.\backend\.venv\Scripts\python.exe backend\manage.py test
+```bash
+cd backend
+python manage.py test
 ```
 
-Weitere Details stehen in `backend/README.md` und `frontend/README.md`.
+Detailed information about the backend setup, API endpoints, authentication, permissions, and tests is available in:
+
+```text
+backend/README.md
+```
+
+Frontend-specific information is available in:
+
+```text
+frontend/README.md
+```
+
+## Environment Configuration
+
+The backend uses a local `.env` file for configuration.
+
+Create it from:
+
+```text
+backend/.env.example
+```
+
+The local `.env` file is excluded from version control and should never contain secrets that are committed to the repository.
+
+## Documentation
+
+- `README.md` — Project overview and quick start
+- `backend/README.md` — Backend setup, API, permissions, authentication, and tests
+- `frontend/README.md` — Frontend setup, API connection, and license information
+
+## License and Attribution
+
+The frontend is based on the official KanMind frontend provided by Developer Akademie GmbH.
+
+Components provided by Developer Akademie are subject to the **Developer Akademie Learning License (Non-commercial)** included in:
+
+```text
+frontend/LICENSE.md
+```
+
+This project may be publicly presented for non-commercial learning, portfolio, application, and reference purposes in accordance with the conditions of that license.
+
+Commercial use, sale, monetization, paid services, or production operation are not permitted unless separately authorized by Developer Akademie GmbH.
+
+**Developed as part of the Developer Akademie GmbH advanced training program.**
