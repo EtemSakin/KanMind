@@ -70,15 +70,31 @@ class BoardDetailSerializer(serializers.ModelSerializer):
 
 
 class BoardUpdateSerializer(serializers.ModelSerializer):
+    owner_data = UserShortSerializer(
+        source="owner",
+        read_only=True,
+    )
+    members_data = UserShortSerializer(
+        source="members",
+        many=True,
+        read_only=True,
+    )
     members = serializers.PrimaryKeyRelatedField(
         queryset=User.objects.all(),
         many=True,
         required=False,
+        write_only=True,
     )
 
     class Meta:
         model = Board
-        fields = ("title", "members")
+        fields = (
+            "id",
+            "title",
+            "owner_data",
+            "members_data",
+            "members",
+        )
         extra_kwargs = {"title": {"required": False}}
 
 
